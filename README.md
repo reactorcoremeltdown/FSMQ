@@ -32,9 +32,47 @@ TBD
 
 ### Clients
 
-Any HTTP client capable of sending POST requests with form data can serve as FSMQ client.
+Any HTTP client capable of sending POST requests with form data can serve as FSMQ client. Below you can find the list of endpoints and parameters that FSMQ can accept and process.
 
-TBD
++ `GET` `/<prefix>/healthcheck` — Returns a string, indicates that the application is running.
++ `POST` `/<prefix>/token/get` — Returns one-time token for authorizing on other endpoints.
+    Accepts following form parameters:
+    + `token=` — A token from ACL file.
+    Example: `curl -XPOST --data-urlencode "token=foo" https://fsmq.tld/<prefix>/token/get`
++ `POST` `/<prefix>/queue/get-job` — Returns the ID of a next job available for processing in a given queue.
+    Accepts following form parameters:
+    + `token=` — One-time token produced by `/<prefix>/token/get` endpoint
+    + `queue=` — An ID of a queue
+    Example: `curl -XPOST --data-urlencode "token=foo" --data-urlencode "queue=bar" https://fsmq.tld/<prefix>/queue/get-job`
++ `POST` `/<prefix>/queue/get-job-payload` — Returns a payload (file contents) of a specified job of a specified queue.
+    Accepts following form parameters:
+    + `token=` — One-time token produced by `/<prefix>/token/get` endpoint
+    + `queue=` — An ID of a queue
+    + `job=` — An ID of a job
+    Example: `curl -XPOST --data-urlencode "token=foo" --data-urlencode "queue=bar" --data-urlencode "job=baz" https://fsmq.tld/<prefix>/queue/get-job-payload`
++ `POST` `/<prefix>/queue/lock-job` — Locks a job (renames a file by adding `-locked` suffix) to protect it from being processed by other consumers. Returns `OK` on success.
+    Accepts following form parameters:
+    + `token=` — One-time token produced by `/<prefix>/token/get` endpoint
+    + `queue=` — An ID of a queue
+    + `job=` — An ID of a job
+    Example: `curl -XPOST --data-urlencode "token=foo" --data-urlencode "queue=bar" --data-urlencode "job=baz" https://fsmq.tld/<prefix>/queue/lock-job`
++ `POST` `/<prefix>/queue/unlock-job` — Makes any locked job available for processing by other consumers. Returns `OK` on success.
+    Accepts following form parameters:
+    + `token=` — One-time token produced by `/<prefix>/token/get` endpoint
+    + `queue=` — An ID of a queue
+    + `job=` — An ID of a job
+    Example: `curl -XPOST --data-urlencode "token=foo" --data-urlencode "queue=bar" --data-urlencode "job=baz" https://fsmq.tld/<prefix>/queue/unlock-job`
++ `POST` `/<prefix>/queue/ack-job` — Permanently removes (acknowledges) job from the queue. Returns `OK` on success.
+    Accepts following form parameters:
+    + `token=` — One-time token produced by `/<prefix>/token/get` endpoint
+    + `queue=` — An ID of a queue
+    + `job=` — An ID of a job
+    Example: `curl -XPOST --data-urlencode "token=foo" --data-urlencode "queue=bar" --data-urlencode "job=baz" https://fsmq.tld/<prefix>/queue/ack-job`
++ `POST` `/<prefix>/queue/put-job` — Produce a job & make it available to other consumers. Returns a job ID on success.
+    + `token=` — One-time token produced by `/<prefix>/token/get` endpoint
+    + `queue=` — An ID of a queue
+    + `payload=` — A message for consumers to process
+    Example: `curl -XPOST --data-urlencode "token=foo" --data-urlencode "queue=bar" --data-urlencode "payload=qux" https://fsmq.tld/<prefix>/queue/put-job`
 
 ## Building
 
