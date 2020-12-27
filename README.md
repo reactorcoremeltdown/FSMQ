@@ -28,7 +28,7 @@ TBD
 
 ### Launching FSMQ
 
-TBD
+Either launch FSMQ binary directly after exporting required variables, or build a docker container & use FSMQ as a deployable service.
 
 ### Clients
 
@@ -84,8 +84,6 @@ Any HTTP client capable of sending POST requests with form data can serve as FSM
 ## Building
 
 I assume running `make` in the root directory of the project should suffice. Obvoiusly one needs to have `golang` installed on building machine.
-
-Makefile TBD
 
 ---
 
