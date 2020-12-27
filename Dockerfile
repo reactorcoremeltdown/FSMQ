@@ -1,10 +1,9 @@
 FROM golang:alpine as builder
-RUN apk add git
-COPY src/ /srv/fsmq
+RUN apk add git make
+COPY . /srv/fsmq
 WORKDIR /srv/fsmq
-ENV GOBIN=/usr/local/bin
-RUN go get && go build -o fsmq
+RUN make
 
 FROM alpine:latest
-COPY --from=builder /srv/fsmq/fsmq /srv/fsmq/fsmq
+COPY --from=builder /srv/fsmq/src/fsmq /srv/fsmq/fsmq
 CMD /srv/fsmq/fsmq
