@@ -25,9 +25,9 @@ func queueGetJob(queueID string) (string, error) {
                 return job.Name(), nil
             }
         }
-        return "", fmt.Errorf("Queue is empty\n")
+        return "", fmt.Errorf("EOQ\n")
     } else {
-        return "", fmt.Errorf("Queue is empty\n")
+        return "", fmt.Errorf("EOQ\n")
     }
 }
 
@@ -131,7 +131,7 @@ func QueueEndpoint(res http.ResponseWriter, req *http.Request) {
                     jobID, err := queueGetJob(queueID)
                     if err != nil {
                         res.WriteHeader(404)
-                        fmt.Fprint(res, "No jobs found in the queue\n")
+                        fmt.Fprint(res, err.Error())
                     } else {
                         fmt.Fprint(res, jobID + "\n")
                     }
