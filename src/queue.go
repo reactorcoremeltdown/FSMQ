@@ -16,7 +16,7 @@ func queueGetJob(queueID string) (string, error) {
     jobs, err := ioutil.ReadDir(os.Getenv("FSMQ_QUEUE_POOL_PATH") + "/" + queueID + "/")
     if err != nil {
         log.Println("Cannot access token pool:" + err.Error())
-        return "", err
+        return "", fmt.Errorf("EOQ\n")
     }
 
     if len(jobs) != 0 {
