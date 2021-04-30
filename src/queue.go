@@ -95,12 +95,8 @@ func queueUnlockJob(queueID, jobID string) (error) {
 }
 
 func queuePutJob(queueID, jobPayload string) (string, error) {
-    jobUUID, err := uuid.NewV4()
-    if err != nil {
-        log.Println("Cannot issue UUIDv4 token: " + err.Error())
-        return "", err
-    }
-    if _, err = os.Stat(os.Getenv("FSMQ_QUEUE_POOL_PATH") + "/" + queueID); os.IsNotExist(err) {
+    jobUUID := uuid.NewV4()
+    if _, err := os.Stat(os.Getenv("FSMQ_QUEUE_POOL_PATH") + "/" + queueID); os.IsNotExist(err) {
         err = os.Mkdir(os.Getenv("FSMQ_QUEUE_POOL_PATH") + "/" + queueID, 0755)
         if err != nil {
             log.Println("Cannot create queue: " + err.Error())

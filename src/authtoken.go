@@ -43,7 +43,7 @@ func GetToken(res http.ResponseWriter, req *http.Request) {
         for _, element := range users {
             if element.Key == authtoken {
                 authSucceeded = true
-                tokenUUID, err := uuid.NewV4()
+                tokenUUID := uuid.NewV4()
                 if err != nil {
                     log.Fatalln("Cannot issue UUIDv4 token: " + err.Error())
                 }
