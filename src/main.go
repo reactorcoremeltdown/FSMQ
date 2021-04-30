@@ -16,6 +16,7 @@ func main () {
     http.HandleFunc(fsmqRoutePrefix + "/token/get", GetToken)
     http.HandleFunc(fsmqRoutePrefix + "/healthcheck", Healthcheck)
     http.HandleFunc(fsmqRoutePrefix + "/queue/get-job", QueueEndpoint)
+    http.HandleFunc(fsmqRoutePrefix + "/queue/get-batch", QueueEndpoint)
     http.HandleFunc(fsmqRoutePrefix + "/queue/get-job-payload", QueueEndpoint)
     http.HandleFunc(fsmqRoutePrefix + "/queue/ack-job", QueueEndpoint)
     http.HandleFunc(fsmqRoutePrefix + "/queue/lock-job", QueueEndpoint)

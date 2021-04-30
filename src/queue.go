@@ -31,6 +31,30 @@ func queueGetJob(queueID string) (string, error) {
     }
 }
 
+func queueGetBatch(queueID string) (string, error) {
+    jobs, err := ioutil.ReadDir(os.Getenv("FSMQ_QUEUE_POOL_PATH") + "/" + queueID + "/")
+    if err != nil {
+        log.Println("Cannot access token pool:" + err.Error())
+        return "", fmt.Errorf("EOQ\n")
+    }
+
+    output := ""
+    if len(jobs) != 0 {
+        for _, job := range jobs {
+            if ! strings.Contains(job.Name(), "-locked") {
+                output = output + job.Name() + "\n"
+            }
+        }
+        if output != "" {
+            return output, nil
+        } else {
+            return "", fmt.Errorf("EOQ\n")
+        }
+    } else {
+        return "", fmt.Errorf("EOQ\n")
+    }
+}
+
 func queueGetJobPayload(queueID, jobID string) (string, error) {
     bin, err := ioutil.ReadFile(os.Getenv("FSMQ_QUEUE_POOL_PATH") + "/" + queueID + "/" + jobID)
     if err != nil {
@@ -134,6 +158,14 @@ func QueueEndpoint(res http.ResponseWriter, req *http.Request) {
                         fmt.Fprint(res, err.Error())
                     } else {
                         fmt.Fprint(res, jobID + "\n")
+                    }
+                case fsmqRoutePrefix + "/queue/get-batch":
+                    batch, err := queueGetBatch(queueID)
+                    if err != nil {
+                        res.WriteHeader(404)
+                        fmt.Fprint(res, err.Error())
+                    } else {
+                        fmt.Fprint(res, batch + "\n")
                     }
                 case fsmqRoutePrefix + "/queue/get-job-payload":
                     jobID := req.Form.Get("job")
