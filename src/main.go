@@ -6,6 +6,8 @@ import (
     "log"
 )
 
+fsmqLogLevel := os.Getenv("FSMQ_LOG_LEVEL")
+
 func main () {
     fsmqAppPort := os.Getenv("FSMQ_APP_PORT")
     if fsmqAppPort == "" {

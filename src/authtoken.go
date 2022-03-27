@@ -25,6 +25,12 @@ func GetToken(res http.ResponseWriter, req *http.Request) {
         err := req.ParseForm()
         if err != nil {
             log.Println("Failed to parse form data: " + err.Error())
+        } else {
+            if fsmqLogLevel == 'debug' {
+                for key, value := range req.Form {
+                    log.Printf("%s = %s\n", key, value)
+                }
+            }
         }
         authtoken := req.Form.Get("token")
 
