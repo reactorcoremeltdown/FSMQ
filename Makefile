@@ -35,3 +35,7 @@ install:
 clean:
 	rm -fr $(BUILDDIR)
 	rm -f src/$(OUTPUT)
+
+release:
+	podman build -t docker.io/reactorcoremeltdown/fsmq:$(TAG) .
+	podman push docker.io/reactorcoremeltdown/fsmq:$(TAG)
