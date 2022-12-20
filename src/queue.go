@@ -15,8 +15,8 @@ import (
 )
 
 func sortFiles(jobs []os.FileInfo) {
-	sort.Slice(files, func(i, j int) bool {
-		return jobs[i].ModTime() < jobs[j].ModTime()
+	sort.Slice(jobs, func(i, j int) bool {
+		return jobs[i].ModTime().Unix() < jobs[j].ModTime().Unix()
 	})
 }
 
