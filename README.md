@@ -1,4 +1,7 @@
 # FSMQ
+
+CI Status: ![](https://ci.rcmd.space/badge/fsmq.svg)
+
 A message queue backed by filesystem
 
 ## Motivation
