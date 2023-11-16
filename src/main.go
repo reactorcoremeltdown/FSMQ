@@ -7,6 +7,7 @@ import (
 )
 
 var fsmqLogLevel string = os.Getenv("FSMQ_LOG_LEVEL")
+var Version, CommitID, BuildDate string
 
 func main() {
 	fsmqAppPort := os.Getenv("FSMQ_APP_PORT")

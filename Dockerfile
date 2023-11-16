@@ -1,9 +1,14 @@
 FROM golang:1.21-alpine as builder
-RUN apk add git make
+ARG VERSION_TAG
+ARG COMMIT_ID
+ARG BUILD_DATE
+RUN apk add git make build-base
 COPY . /srv/fsmq
 WORKDIR /srv/fsmq
-RUN make
+ENV GOBIN=/usr/local/bin
+ENV CGO_ENABLED=1
+RUN go get && go build -ldflags="-X main.Version=$VERSION_TAG -X main.CommitID=$COMMIT_ID -X main.BuildDate=$BUILD_DATE" -buildvcs=false -o fsmq
 
 FROM alpine:latest
-COPY --from=builder /srv/fsmq/src/fsmq /srv/fsmq/fsmq
+COPY --from=builder /srv/fsmq/fsmq /srv/fsmq/fsmq
 CMD /srv/fsmq/fsmq
