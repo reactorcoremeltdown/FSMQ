@@ -1,4 +1,4 @@
-FROM golang:alpine as builder
+FROM golang:1.21-alpine as builder
 RUN apk add git make
 COPY . /srv/fsmq
 WORKDIR /srv/fsmq
