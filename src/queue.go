@@ -24,7 +24,7 @@ func queueGetJob(queueID string) (string, error) {
 	jobs, err := ioutil.ReadDir(os.Getenv("FSMQ_QUEUE_POOL_PATH") + "/" + queueID + "/")
 	if err != nil {
 		log.Println("Cannot access token pool:" + err.Error())
-		return "", fmt.Errorf("EOQ\n")
+		return "", fmt.Errorf("EOQ")
 	}
 
 	if len(jobs) != 0 {
@@ -34,9 +34,9 @@ func queueGetJob(queueID string) (string, error) {
 				return job.Name(), nil
 			}
 		}
-		return "", fmt.Errorf("EOQ\n")
+		return "", fmt.Errorf("EOQ")
 	} else {
-		return "", fmt.Errorf("EOQ\n")
+		return "", fmt.Errorf("EOQ")
 	}
 }
 
@@ -44,7 +44,7 @@ func queueGetBatch(queueID string) (string, error) {
 	jobs, err := ioutil.ReadDir(os.Getenv("FSMQ_QUEUE_POOL_PATH") + "/" + queueID + "/")
 	if err != nil {
 		log.Println("Cannot access token pool:" + err.Error())
-		return "", fmt.Errorf("EOQ\n")
+		return "", fmt.Errorf("EOQ")
 	}
 
 	output := ""
@@ -58,10 +58,10 @@ func queueGetBatch(queueID string) (string, error) {
 		if output != "" {
 			return output, nil
 		} else {
-			return "", fmt.Errorf("EOQ\n")
+			return "", fmt.Errorf("EOQ")
 		}
 	} else {
-		return "", fmt.Errorf("EOQ\n")
+		return "", fmt.Errorf("EOQ")
 	}
 }
 
@@ -163,7 +163,7 @@ func QueueEndpoint(res http.ResponseWriter, req *http.Request) {
 						res.WriteHeader(404)
 						fmt.Fprint(res, err.Error())
 					} else {
-						fmt.Fprint(res, jobID+"\n")
+						fmt.Fprint(res, jobID)
 					}
 				case fsmqRoutePrefix + "/queue/get-batch":
 					batch, err := queueGetBatch(queueID)
@@ -171,7 +171,7 @@ func QueueEndpoint(res http.ResponseWriter, req *http.Request) {
 						res.WriteHeader(404)
 						fmt.Fprint(res, err.Error())
 					} else {
-						fmt.Fprint(res, batch+"\n")
+						fmt.Fprint(res, batch)
 					}
 				case fsmqRoutePrefix + "/queue/get-job-payload":
 					jobID := req.Form.Get("job")
@@ -241,7 +241,7 @@ func QueueEndpoint(res http.ResponseWriter, req *http.Request) {
 								res.WriteHeader(503)
 								fmt.Fprint(res, "Failed to register a new job\n")
 							} else {
-								fmt.Fprint(res, jobID+"\n")
+								fmt.Fprint(res, jobID)
 							}
 						}
 					} else {
