@@ -1,0 +1,53 @@
+---
+kind: pipeline
+type: exec
+name: build
+
+platform:
+  os: linux
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: clone
+  commands:
+  - git clone $DRONE_GIT_SSH_URL
+- name: build
+  commands:
+  - cd $DRONE_REPO_NAME && echo $GIT_SUDO | sudo -S make
+  environment:
+    GIT_SUDO:
+      from_secret: git_sudo
+
+node:
+  machine: garage
+
+---
+kind: pipeline
+type: exec
+name: report
+
+platform:
+  os: linux
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: report
+  commands:
+  - /usr/local/bin/telegram.run
+
+trigger:
+  status:
+  - success
+  - failure
+
+node:
+  machine: garage
+
+depends_on:
+- default
