@@ -12,5 +12,4 @@ fsmq: Makefile src/main.go
 		-t docker.io/reactorcoremeltdown/fsmq:${DRONE_TAG} .
 
 release:
-	podman build -t docker.io/reactorcoremeltdown/fsmq:$(TAG) .
-	podman push docker.io/reactorcoremeltdown/fsmq:$(TAG)
+	podman push docker.io/reactorcoremeltdown/fsmq:${DRONE_TAG}

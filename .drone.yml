@@ -24,6 +24,41 @@ steps:
 node:
   machine: garage
 
+trigger:
+  target:
+    exclude:
+    - release
+
+---
+kind: pipeline
+type: exec
+name: release
+
+platform:
+  os: linux
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: clone
+  commands:
+  - git clone --depth 1 $DRONE_GIT_SSH_URL
+- name: build
+  commands:
+  - cd $DRONE_REPO_NAME && echo $GIT_SUDO | sudo -S make release
+  environment:
+    GIT_SUDO:
+      from_secret: git_sudo
+
+node:
+  machine: garage
+
+trigger:
+  target:
+  - release
+
 ---
 kind: pipeline
 type: exec
@@ -51,3 +86,4 @@ node:
 
 depends_on:
 - default
+- release
