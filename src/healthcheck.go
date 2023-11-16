@@ -6,5 +6,5 @@ import (
 )
 
 func Healthcheck(res http.ResponseWriter, req *http.Request) {
-	fmt.Fprint(res, "Ok, FSMQ server is running\nVersion: "+Version+", Build date: "+BuildDate+", Commit ID: "+CommitID)
+	fmt.Fprint(res, "Ok, FSMQ server is running\n\nVersion: "+Version+"\nBuild date: "+BuildDate+"\nCommit ID: "+CommitID)
 }
