@@ -1,7 +1,7 @@
 ---
 kind: pipeline
 type: exec
-name: build
+name: default
 
 platform:
   os: linux
