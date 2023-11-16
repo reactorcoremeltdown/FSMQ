@@ -3,7 +3,7 @@ ARG VERSION_TAG
 ARG COMMIT_ID
 ARG BUILD_DATE
 RUN apk add git make build-base
-COPY . /srv/fsmq
+COPY src /srv/fsmq
 WORKDIR /srv/fsmq
 ENV GOBIN=/usr/local/bin
 ENV CGO_ENABLED=1
