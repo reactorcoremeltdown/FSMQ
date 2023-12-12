@@ -131,6 +131,7 @@ func queuePutJob(queueID, jobPayload string) (string, error) {
 	_, err = jobFile.WriteString(jobPayload)
 	if err != nil {
 		log.Println("Cannot write payload to file:" + err.Error())
+		return "", err
 	}
 	return jobFilename, nil
 }
