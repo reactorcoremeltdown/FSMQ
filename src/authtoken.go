@@ -1,9 +1,7 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -35,19 +33,8 @@ func GetToken(res http.ResponseWriter, req *http.Request) {
 		}
 		authtoken := req.Form.Get("token")
 
-		var bin []byte
-		if bin, err = ioutil.ReadFile(os.Getenv("FSMQ_ACL_FILE")); err != nil {
-			log.Fatalln("Can't read user database: " + err.Error())
-		}
-
-		var users []User
-		err = json.Unmarshal(bin, &users)
-		if err != nil {
-			log.Fatalln("Can't read config file")
-		}
-
 		authSucceeded := false
-		for _, element := range users {
+		for _, element := range config.Acl {
 			if element.Key == authtoken {
 				authSucceeded = true
 				tokenUUID := uuid.NewV4()
