@@ -34,8 +34,8 @@ type fsmqPoolConfig struct {
 }
 
 type fsmqNetworkConfig struct {
-	Port        int `json:"port"`
-	RoutePrefix int `json:"route_prefix"`
+	Port        int    `json:"port"`
+	RoutePrefix string `json:"route_prefix"`
 }
 
 type fsmqConfig struct {
@@ -63,12 +63,6 @@ func main() {
 	if err := yaml.Unmarshal(file, &config); err != nil {
 		log.Fatal(err)
 	}
-
-	fsmqAppPort := os.Getenv("FSMQ_APP_PORT")
-	if fsmqAppPort == "" {
-		fsmqAppPort = "8080"
-	}
-	fsmqRoutePrefix := os.Getenv("FSMQ_ROUTE_PREFIX")
 
 	http.HandleFunc(config.Network.RoutePrefix+"/token/get", GetToken)
 	http.HandleFunc(config.Network.RoutePrefix+"/healthcheck", Healthcheck)
