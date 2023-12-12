@@ -138,6 +138,7 @@ func queuePutJob(queueID, jobPayload string) (string, error) {
 
 	for _, webhook := range config.Webhook {
 		if webhook.Queue == queueID {
+			log.Println("Firing " + webhook.Name + " webhook")
 			req, err := http.NewRequest("POST", webhook.Url, bytes.NewBuffer([]byte(webhook.Data)))
 			for _, header := range webhook.Headers {
 				req.Header.Set(header.Key, header.Value)
@@ -150,10 +151,10 @@ func queuePutJob(queueID, jobPayload string) (string, error) {
 			}
 			defer resp.Body.Close()
 
-			fmt.Println("Webhook "+webhook.Name+" response Status:", resp.Status)
-			fmt.Println("Webhook "+webhook.Name+"response Headers:", resp.Header)
+			log.Println("Webhook "+webhook.Name+" response Status:", resp.Status)
+			log.Println("Webhook "+webhook.Name+" response Headers:", resp.Header)
 			body, _ := io.ReadAll(resp.Body)
-			fmt.Println("Webhook "+webhook.Name+"response Body:", string(body))
+			log.Println("Webhook "+webhook.Name+" response Body:", string(body))
 		}
 	}
 	return jobFilename, nil
