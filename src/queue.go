@@ -21,7 +21,7 @@ func sortFiles(jobs []os.FileInfo) {
 }
 
 func queueGetJob(queueID string) (string, error) {
-	jobs, err := ioutil.ReadDir(os.Getenv("FSMQ_QUEUE_POOL_PATH") + "/" + queueID + "/")
+	jobs, err := ioutil.ReadDir(config.Pool.Queue + "/" + queueID + "/")
 	if err != nil {
 		log.Println("Cannot access token pool:" + err.Error())
 		return "", fmt.Errorf("EOQ")
@@ -41,7 +41,7 @@ func queueGetJob(queueID string) (string, error) {
 }
 
 func queueGetBatch(queueID string) (string, error) {
-	jobs, err := ioutil.ReadDir(os.Getenv("FSMQ_QUEUE_POOL_PATH") + "/" + queueID + "/")
+	jobs, err := ioutil.ReadDir(config.Pool.Queue + "/" + queueID + "/")
 	if err != nil {
 		log.Println("Cannot access token pool:" + err.Error())
 		return "", fmt.Errorf("EOQ")
@@ -66,7 +66,7 @@ func queueGetBatch(queueID string) (string, error) {
 }
 
 func queueGetJobPayload(queueID, jobID string) (string, error) {
-	bin, err := ioutil.ReadFile(os.Getenv("FSMQ_QUEUE_POOL_PATH") + "/" + queueID + "/" + jobID)
+	bin, err := ioutil.ReadFile(config.Pool.Queue + "/" + queueID + "/" + jobID)
 	if err != nil {
 		log.Println("Cannot read job payload: " + err.Error())
 		return "", err
@@ -76,7 +76,7 @@ func queueGetJobPayload(queueID, jobID string) (string, error) {
 }
 
 func queueAckJob(queueID, jobID string) error {
-	err := os.Remove(os.Getenv("FSMQ_QUEUE_POOL_PATH") + "/" + queueID + "/" + jobID)
+	err := os.Remove(config.Pool.Queue + "/" + queueID + "/" + jobID)
 	if err != nil {
 		log.Println("Cannot remove job: " + err.Error())
 		return err
@@ -85,8 +85,8 @@ func queueAckJob(queueID, jobID string) error {
 }
 
 func queueLockJob(queueID, jobID string) error {
-	err := os.Rename(os.Getenv("FSMQ_QUEUE_POOL_PATH")+"/"+queueID+"/"+jobID,
-		os.Getenv("FSMQ_QUEUE_POOL_PATH")+"/"+queueID+"/"+jobID+"-locked")
+	err := os.Rename(config.Pool.Queue+"/"+queueID+"/"+jobID,
+		config.Pool.Queue+"/"+queueID+"/"+jobID+"-locked")
 	if err != nil {
 		log.Println("Cannot lock job: " + err.Error())
 		return err
@@ -95,8 +95,8 @@ func queueLockJob(queueID, jobID string) error {
 }
 
 func queueUnlockJob(queueID, jobID string) error {
-	err := os.Rename(os.Getenv("FSMQ_QUEUE_POOL_PATH")+"/"+queueID+"/"+jobID+"-locked",
-		os.Getenv("FSMQ_QUEUE_POOL_PATH")+"/"+queueID+"/"+jobID)
+	err := os.Rename(config.Pool.Queue+"/"+queueID+"/"+jobID+"-locked",
+		config.Pool.Queue+"/"+queueID+"/"+jobID)
 	if err != nil {
 		log.Println("Cannot unlock job: " + err.Error())
 		return err
@@ -106,8 +106,8 @@ func queueUnlockJob(queueID, jobID string) error {
 
 func queuePutJob(queueID, jobPayload string) (string, error) {
 	jobUUID := uuid.NewV4()
-	if _, err := os.Stat(os.Getenv("FSMQ_QUEUE_POOL_PATH") + "/" + queueID); os.IsNotExist(err) {
-		err = os.Mkdir(os.Getenv("FSMQ_QUEUE_POOL_PATH")+"/"+queueID, 0755)
+	if _, err := os.Stat(config.Pool.Queue + "/" + queueID); os.IsNotExist(err) {
+		err = os.Mkdir(config.Pool.Queue+"/"+queueID, 0755)
 		if err != nil {
 			log.Println("Cannot create queue: " + err.Error())
 			return "", err
@@ -115,7 +115,7 @@ func queuePutJob(queueID, jobPayload string) (string, error) {
 	}
 	jobFilename := strftime.Format("%d-%m-%Y_%H-%M-%S_", time.Now()) +
 		jobUUID.String()
-	jobFilepath := os.Getenv("FSMQ_QUEUE_POOL_PATH") +
+	jobFilepath := config.Pool.Queue +
 		"/" +
 		queueID +
 		"/" +
@@ -137,8 +137,6 @@ func queuePutJob(queueID, jobPayload string) (string, error) {
 }
 
 func QueueEndpoint(res http.ResponseWriter, req *http.Request) {
-	fsmqRoutePrefix := os.Getenv("FSMQ_ROUTE_PREFIX")
-
 	if req.Method != "POST" {
 		res.WriteHeader(503)
 		fmt.Fprint(res, "This endpoint processes POST requests only\n")
@@ -158,7 +156,7 @@ func QueueEndpoint(res http.ResponseWriter, req *http.Request) {
 				fmt.Fprint(res, "This endpoint needs a queue ID specified\n")
 			} else {
 				switch path := req.URL.Path; path {
-				case fsmqRoutePrefix + "/queue/get-job":
+				case config.Network.RoutePrefix + "/queue/get-job":
 					jobID, err := queueGetJob(queueID)
 					if err != nil {
 						res.WriteHeader(404)
@@ -166,7 +164,7 @@ func QueueEndpoint(res http.ResponseWriter, req *http.Request) {
 					} else {
 						fmt.Fprint(res, jobID)
 					}
-				case fsmqRoutePrefix + "/queue/get-batch":
+				case config.Network.RoutePrefix + "/queue/get-batch":
 					batch, err := queueGetBatch(queueID)
 					if err != nil {
 						res.WriteHeader(404)
@@ -174,7 +172,7 @@ func QueueEndpoint(res http.ResponseWriter, req *http.Request) {
 					} else {
 						fmt.Fprint(res, batch)
 					}
-				case fsmqRoutePrefix + "/queue/get-job-payload":
+				case config.Network.RoutePrefix + "/queue/get-job-payload":
 					jobID := req.Form.Get("job")
 					if jobID == "" {
 						res.WriteHeader(400)
@@ -188,7 +186,7 @@ func QueueEndpoint(res http.ResponseWriter, req *http.Request) {
 							fmt.Fprint(res, jobPayload)
 						}
 					}
-				case fsmqRoutePrefix + "/queue/ack-job":
+				case config.Network.RoutePrefix + "/queue/ack-job":
 					jobID := req.Form.Get("job")
 					if jobID == "" {
 						res.WriteHeader(400)
@@ -202,7 +200,7 @@ func QueueEndpoint(res http.ResponseWriter, req *http.Request) {
 							fmt.Fprint(res, "OK\n")
 						}
 					}
-				case fsmqRoutePrefix + "/queue/lock-job":
+				case config.Network.RoutePrefix + "/queue/lock-job":
 					jobID := req.Form.Get("job")
 					if jobID == "" {
 						res.WriteHeader(400)
@@ -216,7 +214,7 @@ func QueueEndpoint(res http.ResponseWriter, req *http.Request) {
 							fmt.Fprint(res, "OK\n")
 						}
 					}
-				case fsmqRoutePrefix + "/queue/unlock-job":
+				case config.Network.RoutePrefix + "/queue/unlock-job":
 					jobID := req.Form.Get("job")
 					if jobID == "" {
 						res.WriteHeader(400)
@@ -230,7 +228,7 @@ func QueueEndpoint(res http.ResponseWriter, req *http.Request) {
 							fmt.Fprint(res, "OK\n")
 						}
 					}
-				case fsmqRoutePrefix + "/queue/put-job":
+				case config.Network.RoutePrefix + "/queue/put-job":
 					if producer {
 						jobPayload := req.Form.Get("payload")
 						if jobPayload == "" {
