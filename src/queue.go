@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -132,6 +134,27 @@ func queuePutJob(queueID, jobPayload string) (string, error) {
 	if err != nil {
 		log.Println("Cannot write payload to file:" + err.Error())
 		return "", err
+	}
+
+	for _, webhook := range config.Webhook {
+		if webhook.Queue == queueID {
+			req, err := http.NewRequest("POST", webhook.Url, bytes.NewBuffer([]byte(webhook.Data)))
+			for _, header := range webhook.Headers {
+				req.Header.Set(header.Key, header.Value)
+			}
+
+			client := &http.Client{}
+			resp, err := client.Do(req)
+			if err != nil {
+				log.Println("Failed to run a webhook" + err.Error())
+			}
+			defer resp.Body.Close()
+
+			fmt.Println("Webhook "+webhook.Name+" response Status:", resp.Status)
+			fmt.Println("Webhook "+webhook.Name+"response Headers:", resp.Header)
+			body, _ := io.ReadAll(resp.Body)
+			fmt.Println("Webhook "+webhook.Name+"response Body:", string(body))
+		}
 	}
 	return jobFilename, nil
 }
