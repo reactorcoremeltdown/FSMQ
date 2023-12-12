@@ -41,7 +41,7 @@ func GetToken(res http.ResponseWriter, req *http.Request) {
 				if err != nil {
 					log.Fatalln("Cannot issue UUIDv4 token: " + err.Error())
 				}
-				tokenFile, err := os.Create(os.Getenv("FSMQ_TOKEN_POOL_PATH") + "/token-" + tokenUUID.String())
+				tokenFile, err := os.Create(config.Pool.Token + "/token-" + tokenUUID.String())
 				if err != nil {
 					log.Fatalln("Cannot create token file: " + err.Error())
 				}
