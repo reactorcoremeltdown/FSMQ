@@ -48,7 +48,7 @@ func GetBatch(url, token, queue string) (response string, err error) {
 	return
 }
 
-func FsmqGetJobPayload(url, token, queue, job string) (response string, err error) {
+func GetJobPayload(url, token, queue, job string) (response string, err error) {
 	disposableToken, err := GetDisposableToken(url, token)
 	if err != nil {
 		log.Println("Failed to get FSMQ token for GetJobPayload operation: " + err.Error())
@@ -72,7 +72,7 @@ func FsmqGetJobPayload(url, token, queue, job string) (response string, err erro
 	return
 }
 
-func FsmqAckJob(url, token, queue, job string) (err error) {
+func AckJob(url, token, queue, job string) (err error) {
 	disposableToken, err := GetDisposableToken(url, token)
 	if err != nil {
 		log.Println("Failed to get FSMQ token for AckJob operation: " + err.Error())
