@@ -84,7 +84,7 @@ func AckJob(queueURL, token, queue, job string) (err error) {
 		"job":   {job},
 	}
 
-	_, err := http.PostForm(queueURL+"queue/ack-job", data)
+	_, err = http.PostForm(queueURL+"queue/ack-job", data)
 	if err != nil {
 		log.Println("Failed to ack job: " + err.Error())
 	}
@@ -105,7 +105,7 @@ func LockJob(queueURL, token, queue, job string) (err error) {
 		"job":   {job},
 	}
 
-	_, err := http.PostForm(queueURL+"queue/lock-job", data)
+	_, err = http.PostForm(queueURL+"queue/lock-job", data)
 	if err != nil {
 		log.Println("Failed to lock job: " + err.Error())
 	}
@@ -126,7 +126,7 @@ func UnlockJob(queueURL, token, queue, job string) (err error) {
 		"job":   {job},
 	}
 
-	_, err := http.PostForm(queueURL+"queue/unlock-job", data)
+	_, err = http.PostForm(queueURL+"queue/unlock-job", data)
 	if err != nil {
 		log.Println("Failed to unlock job: " + err.Error())
 	}
