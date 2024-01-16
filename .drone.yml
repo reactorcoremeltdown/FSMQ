@@ -22,7 +22,7 @@ steps:
       from_secret: git_sudo
 
 node:
-  machine: garage
+  role: production
 
 trigger:
   target:
@@ -53,7 +53,7 @@ steps:
       from_secret: git_sudo
 
 node:
-  machine: garage
+  role: production
 
 trigger:
   target:
@@ -82,7 +82,7 @@ trigger:
   - failure
 
 node:
-  machine: garage
+  role: production
 
 depends_on:
 - default
