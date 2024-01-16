@@ -9,11 +9,11 @@ import (
 	"time"
 )
 
-func GetDisposableToken(url, token) (disposableToken string, err error) {
+func GetDisposableToken(queueURL, token string) (disposableToken string, err error) {
 	data := url.Values{
 		"token": {token},
 	}
-	resp, err := http.PostForm(url+"token/get", data)
+	resp, err := http.PostForm(queueURL+"token/get", data)
 	if err != nil {
 		log.Println("Failed to request token: " + err.Error())
 	}
@@ -25,8 +25,8 @@ func GetDisposableToken(url, token) (disposableToken string, err error) {
 	return
 }
 
-func GetBatch(url, token, queue string) (response string, err error) {
-	disposableToken, err := GetDisposableToken(url, token)
+func GetBatch(queueURL, token, queue string) (response string, err error) {
+	disposableToken, err := GetDisposableToken(queueURL, token)
 	if err != nil {
 		log.Println("Failed to get FSMQ token for GetBatch operation: " + err.Error())
 		return
@@ -36,7 +36,7 @@ func GetBatch(url, token, queue string) (response string, err error) {
 		"queue": {queue},
 	}
 
-	resp, err := http.PostForm(url+"queue/get-batch", data)
+	resp, err := http.PostForm(queueURL+"queue/get-batch", data)
 	if err != nil {
 		log.Println("Failed to request batch: " + err.Error())
 	}
@@ -48,8 +48,8 @@ func GetBatch(url, token, queue string) (response string, err error) {
 	return
 }
 
-func GetJobPayload(url, token, queue, job string) (response string, err error) {
-	disposableToken, err := GetDisposableToken(url, token)
+func GetJobPayload(queueURL, token, queue, job string) (response string, err error) {
+	disposableToken, err := GetDisposableToken(queueURL, token)
 	if err != nil {
 		log.Println("Failed to get FSMQ token for GetJobPayload operation: " + err.Error())
 		return
@@ -60,7 +60,7 @@ func GetJobPayload(url, token, queue, job string) (response string, err error) {
 		"job":   {job},
 	}
 
-	resp, err := http.PostForm(url+"queue/get-job-payload", data)
+	resp, err := http.PostForm(queueURL+"queue/get-job-payload", data)
 	if err != nil {
 		log.Println("Failed to fetch job payload: " + err.Error())
 	}
@@ -72,8 +72,8 @@ func GetJobPayload(url, token, queue, job string) (response string, err error) {
 	return
 }
 
-func AckJob(url, token, queue, job string) (err error) {
-	disposableToken, err := GetDisposableToken(url, token)
+func AckJob(queueURL, token, queue, job string) (err error) {
+	disposableToken, err := GetDisposableToken(queueURL, token)
 	if err != nil {
 		log.Println("Failed to get FSMQ token for AckJob operation: " + err.Error())
 		return
@@ -84,7 +84,7 @@ func AckJob(url, token, queue, job string) (err error) {
 		"job":   {job},
 	}
 
-	_, err := http.PostForm(url+"queue/ack-job", data)
+	_, err := http.PostForm(queueURL+"queue/ack-job", data)
 	if err != nil {
 		log.Println("Failed to ack job: " + err.Error())
 	}
@@ -93,8 +93,8 @@ func AckJob(url, token, queue, job string) (err error) {
 	return
 }
 
-func LockJob(url, token, queue, job string) (err error) {
-	disposableToken, err := GetDisposableToken(url, token)
+func LockJob(queueURL, token, queue, job string) (err error) {
+	disposableToken, err := GetDisposableToken(queueURL, token)
 	if err != nil {
 		log.Println("Failed to get FSMQ token for LockJob operation: " + err.Error())
 		return
@@ -105,7 +105,7 @@ func LockJob(url, token, queue, job string) (err error) {
 		"job":   {job},
 	}
 
-	_, err := http.PostForm(url+"queue/lock-job", data)
+	_, err := http.PostForm(queueURL+"queue/lock-job", data)
 	if err != nil {
 		log.Println("Failed to lock job: " + err.Error())
 	}
@@ -114,8 +114,8 @@ func LockJob(url, token, queue, job string) (err error) {
 	return
 }
 
-func UnlockJob(url, token, queue, job string) (err error) {
-	disposableToken, err := GetDisposableToken(url, token)
+func UnlockJob(queueURL, token, queue, job string) (err error) {
+	disposableToken, err := GetDisposableToken(queueURL, token)
 	if err != nil {
 		log.Println("Failed to get FSMQ token for LockJob operation: " + err.Error())
 		return
@@ -126,7 +126,7 @@ func UnlockJob(url, token, queue, job string) (err error) {
 		"job":   {job},
 	}
 
-	_, err := http.PostForm(url+"queue/unlock-job", data)
+	_, err := http.PostForm(queueURL+"queue/unlock-job", data)
 	if err != nil {
 		log.Println("Failed to unlock job: " + err.Error())
 	}
@@ -135,8 +135,8 @@ func UnlockJob(url, token, queue, job string) (err error) {
 	return
 }
 
-func PutJob(url, token, queue, payload string) (response string, err error) {
-	disposableToken, err := GetDisposableToken(url, token)
+func PutJob(queueURL, token, queue, payload string) (response string, err error) {
+	disposableToken, err := GetDisposableToken(queueURL, token)
 	if err != nil {
 		log.Println("Failed to get FSMQ token for PutJob operation: " + err.Error())
 		return
@@ -147,7 +147,7 @@ func PutJob(url, token, queue, payload string) (response string, err error) {
 		"payload": {payload},
 	}
 
-	resp, err := http.PostForm(url+"queue/put-job", data)
+	resp, err := http.PostForm(queueURL+"queue/put-job", data)
 	if err != nil {
 		log.Println("Failed to put job payload: " + err.Error())
 		return
