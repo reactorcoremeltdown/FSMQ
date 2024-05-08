@@ -115,7 +115,7 @@ func queuePutJob(queueID, jobPayload string) (string, error) {
 			return "", err
 		}
 	}
-	jobFilename := strftime.Format("%d-%m-%Y_%H-%M-%S_", time.Now()) +
+	jobFilename := strftime.Format("%Y-%m-%d_%H-%M-%S_", time.Now()) +
 		jobUUID.String()
 	jobFilepath := config.Pool.Queue +
 		"/" +
