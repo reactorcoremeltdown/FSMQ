@@ -278,7 +278,7 @@ func QueueEndpoint(res http.ResponseWriter, req *http.Request) {
 			}
 		} else {
 			res.WriteHeader(403)
-			fmt.Fprint(res, "Authentication failed\n")
+			fmt.Fprint(res, "Authentication failed at "+req.URL.Path+"\n")
 		}
 	}
 }
