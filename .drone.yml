@@ -47,10 +47,14 @@ steps:
   - git clone $DRONE_GIT_SSH_URL
 - name: build
   commands:
-  - cd $DRONE_REPO_NAME && echo $GIT_SUDO | sudo -S make release
+  - cd $DRONE_REPO_NAME && echo $GIT_SUDO | sudo -S make release DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD
   environment:
     GIT_SUDO:
       from_secret: git_sudo
+    DOCKERHUB_USERNAME:
+      from_secret: dockerhub_username
+    DOCKERHUB_PASSWORD:
+      from_secret: dockerhub_password
 
 node:
   role: production

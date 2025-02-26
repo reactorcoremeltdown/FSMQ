@@ -70,6 +70,7 @@ func main() {
 	http.HandleFunc(config.Network.RoutePrefix+"/queue/get-batch", QueueEndpoint)
 	http.HandleFunc(config.Network.RoutePrefix+"/queue/get-job-payload", QueueEndpoint)
 	http.HandleFunc(config.Network.RoutePrefix+"/queue/ack-job", QueueEndpoint)
+	http.HandleFunc(config.Network.RoutePrefix+"/queue/discard-all-jobs", QueueEndpoint)
 	http.HandleFunc(config.Network.RoutePrefix+"/queue/lock-job", QueueEndpoint)
 	http.HandleFunc(config.Network.RoutePrefix+"/queue/unlock-job", QueueEndpoint)
 	http.HandleFunc(config.Network.RoutePrefix+"/queue/put-job", QueueEndpoint)

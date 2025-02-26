@@ -86,6 +86,15 @@ func queueAckJob(queueID, jobID string) error {
 	return nil
 }
 
+func queueDiscardAllJobs(queueID string) error {
+	err := os.RemoveAll(config.Pool.Queue + "/" + queueID)
+	if err != nil {
+		log.Println("Cannot discard jobs in queue: " + err.Error())
+		return err
+	}
+	return nil
+}
+
 func queueLockJob(queueID, jobID string) error {
 	err := os.Rename(config.Pool.Queue+"/"+queueID+"/"+jobID,
 		config.Pool.Queue+"/"+queueID+"/"+jobID+"-locked")
@@ -224,6 +233,14 @@ func QueueEndpoint(res http.ResponseWriter, req *http.Request) {
 							fmt.Fprint(res, "OK\n")
 						}
 					}
+				case config.Network.RoutePrefix + "/queue/discard-all-jobs":
+					err = queueDiscardAllJobs(queueID)
+					if err != nil {
+						res.WriteHeader(503)
+						fmt.Fprint(res, "Failed to discard all jobs in the queue "+queueID+"\n")
+					} else {
+						fmt.Fprint(res, "OK\n")
+					}
 				case config.Network.RoutePrefix + "/queue/lock-job":
 					jobID := req.Form.Get("job")
 					if jobID == "" {
@@ -278,7 +295,7 @@ func QueueEndpoint(res http.ResponseWriter, req *http.Request) {
 			}
 		} else {
 			res.WriteHeader(403)
-			fmt.Fprint(res, "Authentication failed\n")
+			fmt.Fprint(res, "Authentication failed at "+req.URL.Path+"\n")
 		}
 	}
 }

@@ -93,6 +93,26 @@ func AckJob(queueURL, token, queue, job string) (err error) {
 	return
 }
 
+func DiscardAllJobs(queueURL, token, queue string) (err error) {
+	disposableToken, err := GetDisposableToken(queueURL, token)
+	if err != nil {
+		log.Println("Failed to get FSMQ token for AckJob operation: " + err.Error())
+		return
+	}
+	data := url.Values{
+		"token": {disposableToken},
+		"queue": {queue},
+	}
+
+	_, err = http.PostForm(queueURL+"queue/discard-all-jobs", data)
+	if err != nil {
+		log.Println("Failed to discard all jobs in a queue: " + err.Error())
+	}
+	time.Sleep(200 * time.Millisecond)
+
+	return
+}
+
 func LockJob(queueURL, token, queue, job string) (err error) {
 	disposableToken, err := GetDisposableToken(queueURL, token)
 	if err != nil {

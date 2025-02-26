@@ -11,6 +11,9 @@ fsmq: Makefile src/main.go
 		--build-arg BUILD_DATE=${DRONE_BUILD_DATE} \
 		-t docker.io/reactorcoremeltdown/fsmq:${DRONE_TAG} .
 
-release:
+login:
+	podman login docker.io -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}
+
+release: fsmq login
 	pwd
 	podman push docker.io/reactorcoremeltdown/fsmq:${DRONE_TAG}
