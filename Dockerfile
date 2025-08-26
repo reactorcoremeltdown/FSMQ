@@ -1,4 +1,4 @@
-FROM golang:1.23-alpine as builder
+FROM golang:1.25.0-alpine3.22 as builder
 ARG VERSION_TAG
 ARG COMMIT_ID
 ARG BUILD_DATE
@@ -9,6 +9,6 @@ ENV GOBIN=/usr/local/bin
 ENV CGO_ENABLED=1
 RUN go get && go build -ldflags="-X main.Version=$VERSION_TAG -X main.CommitID=$COMMIT_ID -X main.BuildDate=$BUILD_DATE" -buildvcs=false -o fsmq
 
-FROM alpine:3.21.3
+FROM alpine:3.22.1
 COPY --from=builder /srv/fsmq/fsmq /srv/fsmq/fsmq
 CMD /srv/fsmq/fsmq
