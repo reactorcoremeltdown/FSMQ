@@ -1,4 +1,4 @@
-FROM golang:1.25.0-alpine3.22 as builder
+FROM golang:1.25.4-alpine as builder
 ARG VERSION_TAG
 ARG COMMIT_ID
 ARG BUILD_DATE
